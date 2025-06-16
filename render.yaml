@@ -1,30 +1,40 @@
 # render.yaml
-# Corrected version using an alternative, valid syntax for Environment Groups.
+# Final, corrected version using individual secret keys per service.
+# This is the most direct and standard way to configure secrets.
 
-# 1. Define the names for your Environment Groups.
-# You will populate these groups with your secrets in the Render Dashboard.
-envGroups:
-  - name: backend-secrets
-  - name: frontend-secrets
-
-# 2. Define your services and link them to the correct group.
 services:
-  # The Backend Service (Private)
+  # 1. The Backend Service (Private)
   - type: pserv
     name: backend # This name MUST match the 'proxy_pass' in your default.conf
     runtime: docker
     dockerContext: ./server
     dockerfilePath: ./server/Dockerfile
-    # Link to the environment group by nesting 'fromGroup' under 'envVars'.
     envVars:
-      - fromGroup: backend-secrets
+      # Render will prompt you to create a secret key named 'GEMINI_API_KEY'
+      # in the dashboard and link its value here.
+      - key: GEMINI_API_KEY
+        fromSecret: true
 
-  # The Frontend Service (Public)
+  # 2. The Frontend Service (Public)
   - type: web
     name: seo-frontend
     runtime: docker
     dockerContext: ./client
     dockerfilePath: ./client/Dockerfile
-    # Link to the environment group by nesting 'fromGroup' under 'envVars'.
     envVars:
-      - fromGroup: frontend-secrets
+      # For each of these, Render will prompt you to create a secret key
+      # with the same name in the dashboard.
+      - key: VITE_FIREBASE_API_KEY
+        fromSecret: true
+      - key: VITE_FIREBASE_AUTH_DOMAIN
+        fromSecret: true
+      - key: VITE_FIREBASE_PROJECT_ID
+        fromSecret: true
+      - key: VITE_FIREBASE_STORAGE_BUCKET
+        fromSecret: true
+      - key: VITE_FIREBASE_MESSAGING_SENDER_ID
+        fromSecret: true
+      - key: VITE_FIREBASE_APP_ID
+        fromSecret: true
+      - key: VITE_FIREBASE_MEASUREMENT_ID
+        fromSecret: true
