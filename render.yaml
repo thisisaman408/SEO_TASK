@@ -1,18 +1,30 @@
+# render.yaml
+# Corrected version using an alternative, valid syntax for Environment Groups.
+
+# 1. Define the names for your Environment Groups.
+# You will populate these groups with your secrets in the Render Dashboard.
 envGroups:
   - name: backend-secrets
   - name: frontend-secrets
+
+# 2. Define your services and link them to the correct group.
 services:
+  # The Backend Service (Private)
   - type: pserv
-    name: backend
+    name: backend # This name MUST match the 'proxy_pass' in your default.conf
     runtime: docker
     dockerContext: ./server
     dockerfilePath: ./server/Dockerfile
-   
-    envGroup: backend-secrets
+    # Link to the environment group by nesting 'fromGroup' under 'envVars'.
+    envVars:
+      - fromGroup: backend-secrets
 
+  # The Frontend Service (Public)
   - type: web
     name: seo-frontend
     runtime: docker
     dockerContext: ./client
     dockerfilePath: ./client/Dockerfile
-    envGroup: frontend-secrets
+    # Link to the environment group by nesting 'fromGroup' under 'envVars'.
+    envVars:
+      - fromGroup: frontend-secrets
