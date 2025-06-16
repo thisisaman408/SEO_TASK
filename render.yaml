@@ -1,0 +1,29 @@
+services:
+  - type: pserv
+    name: backend
+    runtime: docker
+    dockerContext: ./server
+    dockerfilePath: ./server/Dockerfile
+    envVars:
+      - key: GEMINI_API_KEY
+        fromSecret: true
+  - type: web
+    name: seo-frontend
+    runtime: docker
+    dockerContext: ./client
+    dockerfilePath: ./client/Dockerfile
+    envVars:
+      - key: VITE_FIREBASE_API_KEY
+        fromSecret: true
+      - key: VITE_FIREBASE_AUTH_DOMAIN
+        fromSecret: true
+      - key: VITE_FIREBASE_PROJECT_ID
+        fromSecret: true
+      - key: VITE_FIREBASE_STORAGE_BUCKET
+        fromSecret: true
+      - key: VITE_FIREBASE_MESSAGING_SENDER_ID
+        fromSecret: true
+      - key: VITE_FIREBASE_APP_ID
+        fromSecret: true
+      - key: VITE_FIREBASE_MEASUREMENT_ID
+        fromSecret: true

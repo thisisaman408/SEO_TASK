@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./server
+    container_name: seo_backend
+    restart: unless-stopped
+    env_file:
+       - ./server/.env
+    networks:
+      - seo-network
+
+  frontend: 
+    build: ./client
+    container_name: seo_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf:ro
+    env_file:
+     - ./client/.env
+    depends_on:
+      - backend
+    networks:
+      - seo-network
+
+networks:
+  seo-network:
+    driver: bridge
